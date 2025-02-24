@@ -1,6 +1,6 @@
 package com.won.message.controller
 
-import com.won.message.model.Space
+import com.won.message.space.Space
 import org.springframework.web.bind.annotation.*
 
 @RestController

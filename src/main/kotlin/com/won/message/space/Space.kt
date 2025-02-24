@@ -1,4 +1,4 @@
-package com.won.message.model
+package com.won.message.space
 
 import java.time.Instant
 
