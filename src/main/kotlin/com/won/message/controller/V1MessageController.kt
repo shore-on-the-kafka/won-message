@@ -40,6 +40,17 @@ class V1MessageController(
         return messageService.getListBySpaceId(spaceId)
     }
 
+    /**
+     * This API is a temporary API.
+     * If a Batch request API is added later, This API will be deleted.
+     */
+    @PostMapping("/v1/messages")
+    fun getListBySpaceIds(@RequestBody spaceIds: List<String>): List<Message> {
+        return spaceIds.map { messageService.getListBySpaceId(it) }
+            .flatten()
+            .sortedByDescending { it.createTime }
+    }
+
     @DeleteMapping("/v1/spaces/{spaceId}/messages/{messageId}")
     fun deleteById(
         @PathVariable spaceId: String,

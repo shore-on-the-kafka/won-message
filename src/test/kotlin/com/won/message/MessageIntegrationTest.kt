@@ -73,6 +73,49 @@ class MessageIntegrationTest @Autowired constructor(
     }
 
     @Test
+    fun `create and get messages in multiple space`() {
+        val spaceId1 = TestObjectFactory.createSpaceId()
+        val spaceId2 = TestObjectFactory.createSpaceId()
+        val spaceId3 = TestObjectFactory.createSpaceId()
+        val createRequestBody1 = TestObjectFactory.fixtureMonkey.giveMeOne(MessageCreateReqeustBody::class.java)
+        val createRequestBody2 = TestObjectFactory.fixtureMonkey.giveMeOne(MessageCreateReqeustBody::class.java)
+        val createRequestBody3 = TestObjectFactory.fixtureMonkey.giveMeOne(MessageCreateReqeustBody::class.java)
+
+        listOf(
+            Pair(spaceId1, createRequestBody1),
+            Pair(spaceId2, createRequestBody2),
+            Pair(spaceId3, createRequestBody3)
+        ).forEach {
+            mockMvc.perform(
+                post("/v1/spaces/${it.first}/messages")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(it.second))
+            )
+        }
+
+        val getListResponse = mockMvc.perform(
+            post("/v1/messages")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(listOf(spaceId1, spaceId2, spaceId3)))
+        ).andReturn().response
+        val messageList = objectMapper.readValue<List<Message>>(getListResponse.contentAsString)
+
+        assertEquals(200, getListResponse.status)
+        assertEquals(3, messageList.size)
+        val expectedSpaceMessagePairList = listOf(
+            Pair(spaceId3, createRequestBody3),
+            Pair(spaceId2, createRequestBody2),
+            Pair(spaceId1, createRequestBody1)
+        )
+        messageList.forEachIndexed { index, message ->
+            assertEquals(expectedSpaceMessagePairList[index].first, message.spaceId)
+            assertEquals(expectedSpaceMessagePairList[index].second.content, message.content)
+            assertEquals(expectedSpaceMessagePairList[index].second.senderId, message.senderId)
+            assertEquals(expectedSpaceMessagePairList[index].second.substitution, message.substitution)
+        }
+    }
+
+    @Test
     fun `delete message`() {
         val spaceId = TestObjectFactory.createSpaceId()
         val createRequestBody = TestObjectFactory.fixtureMonkey.giveMeOne(MessageCreateReqeustBody::class.java)
