@@ -24,12 +24,12 @@ class MessageServiceTest {
 
     @Test
     fun get() {
-        every { repository.getOrNull(message.id) } returns message
+        every { repository.get(message.id) } returns message
 
         val result = cut.getOrException(message.spaceId, message.id)
 
         assertEquals(result, message)
-        verify(exactly = 1) { repository.getOrNull(message.id) }
+        verify(exactly = 1) { repository.get(message.id) }
     }
 
     @Test

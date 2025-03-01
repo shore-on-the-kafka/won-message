@@ -19,10 +19,10 @@ class MessageHashMapRepositoryTest {
     @Test
     fun `create and get message`() {
         val message = TestObjectFactory.createMessage()
-        val before = repository.getOrNull(message.id)
+        val before = repository.get(message.id)
 
         repository.create(message)
-        val after = repository.getOrNull(message.id)
+        val after = repository.get(message.id)
 
         assertNull(before)
         assertEquals(message, after)
@@ -36,7 +36,7 @@ class MessageHashMapRepositoryTest {
         val updatedMessage = TestObjectFactory.createMessage(messageId = existingMessage.id)
 
         val updateResult = repository.update(updatedMessage)
-        val after = repository.getOrNull(existingMessage.id)
+        val after = repository.get(existingMessage.id)
 
         assertEquals(updatedMessage, updateResult)
         assertEquals(updatedMessage, after)
@@ -48,7 +48,7 @@ class MessageHashMapRepositoryTest {
         repository.create(message)
 
         repository.deleteById(message.id)
-        val result = repository.getOrNull(message.id)
+        val result = repository.get(message.id)
 
         assertNull(result)
     }

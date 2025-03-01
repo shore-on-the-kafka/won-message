@@ -18,10 +18,10 @@ class SpaceHashMapRepositoryTest {
     @Test
     fun `create and get space`() {
         val space = TestObjectFactory.createSpace()
-        val before = repository.getOrNull(space.id)
+        val before = repository.get(space.id)
 
         repository.create(space)
-        val after = repository.getOrNull(space.id)
+        val after = repository.get(space.id)
 
         assertNull(before)
         assertEquals(space, after)
@@ -35,7 +35,7 @@ class SpaceHashMapRepositoryTest {
         val updatedSpace = TestObjectFactory.createSpace(spaceId = existingSpace.id)
 
         val updateResult = repository.update(updatedSpace)
-        val after = repository.getOrNull(existingSpace.id)
+        val after = repository.get(existingSpace.id)
 
         assertEquals(updatedSpace, updateResult)
         assertEquals(updatedSpace, after)
@@ -47,7 +47,7 @@ class SpaceHashMapRepositoryTest {
         repository.create(space)
 
         repository.deleteById(space.id)
-        val result = repository.getOrNull(space.id)
+        val result = repository.get(space.id)
 
         assertNull(result)
     }

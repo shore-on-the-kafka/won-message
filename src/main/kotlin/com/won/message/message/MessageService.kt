@@ -14,7 +14,7 @@ class MessageService(
      * @throws IllegalArgumentException if message not found
      */
     fun getOrException(spaceId: String, id: String): Message {
-        val message = messageRepository.getOrNull(id)
+        val message = messageRepository.get(id)
         require(message?.spaceId == spaceId) { "Message not found" }
         return message!!
     }

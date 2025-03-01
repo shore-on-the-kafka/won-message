@@ -11,7 +11,7 @@ class SpaceService(
     }
 
     fun getOrException(id: String): Space {
-        return requireNotNull(spaceRepository.getOrNull(id)) { "Space not found" }
+        return requireNotNull(spaceRepository.get(id)) { "Space not found" }
     }
 
     fun update(entity: Space): Space {

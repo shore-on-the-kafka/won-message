@@ -24,12 +24,12 @@ class SpaceServiceTest {
 
     @Test
     fun get() {
-        every { repository.getOrNull(space.id) } returns space
+        every { repository.get(space.id) } returns space
 
         val result = cut.getOrException(space.id)
 
         assertEquals(result, space)
-        verify(exactly = 1) { repository.getOrNull(space.id) }
+        verify(exactly = 1) { repository.get(space.id) }
     }
 
     @Test

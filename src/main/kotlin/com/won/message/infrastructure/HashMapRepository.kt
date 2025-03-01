@@ -10,7 +10,7 @@ abstract class HashMapRepository<T, ID> : Repository<T, ID> {
     }
 
 
-    override fun getOrNull(id: ID): T? {
+    override fun get(id: ID): T? {
         return map[id]
     }
 
