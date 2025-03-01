@@ -1,9 +1,9 @@
 package com.won.message.controller
 
 import com.won.message.controller.request.MessageCreateReqeustBody
-import com.won.message.exception.MessageException
 import com.won.message.message.Message
 import com.won.message.message.MessageService
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
@@ -16,28 +16,28 @@ class V1MessageController(
     fun create(
         @PathVariable spaceId: String,
         @RequestBody body: MessageCreateReqeustBody,
-    ): Message {
+    ): ResponseEntity<Message> {
         val message = Message.create(spaceId, body, Instant.now())
-        return messageService.create(message)
+        return ResponseEntity.ok(messageService.create(message))
     }
 
     @GetMapping("/v1/spaces/{spaceId}/messages/{messageId}")
     fun get(
         @PathVariable spaceId: String,
         @PathVariable messageId: String,
-    ): Message {
-        return kotlin.runCatching { messageService.getOrException(spaceId, messageId) }
+    ): ResponseEntity<Message> {
+        return kotlin.runCatching { ResponseEntity.ok(messageService.getOrException(spaceId, messageId)) }
             .getOrElse {
                 when (it) {
-                    is IllegalArgumentException -> throw MessageException.MessageNotFoundException()
+                    is IllegalArgumentException -> ResponseEntity.notFound().build()
                     else -> throw it
                 }
             }
     }
 
     @GetMapping("/v1/spaces/{spaceId}/messages")
-    fun getList(@PathVariable spaceId: String): List<Message> {
-        return messageService.getListBySpaceId(spaceId)
+    fun getList(@PathVariable spaceId: String): ResponseEntity<List<Message>> {
+        return ResponseEntity.ok(messageService.getListBySpaceId(spaceId))
     }
 
     /**
@@ -45,18 +45,19 @@ class V1MessageController(
      * If a Batch request API is added later, This API will be deleted.
      */
     @PostMapping("/v1/messages")
-    fun getListBySpaceIds(@RequestBody spaceIds: List<String>): List<Message> {
-        return spaceIds.map { messageService.getListBySpaceId(it) }
+    fun getListBySpaceIds(@RequestBody spaceIds: List<String>): ResponseEntity<List<Message>> {
+        return ResponseEntity.ok(spaceIds.map { messageService.getListBySpaceId(it) }
             .flatten()
-            .sortedByDescending { it.createTime }
+            .sortedByDescending { it.createTime })
     }
 
     @DeleteMapping("/v1/spaces/{spaceId}/messages/{messageId}")
     fun deleteById(
         @PathVariable spaceId: String,
         @PathVariable messageId: String,
-    ) {
+    ): ResponseEntity<Boolean> {
         messageService.deleteById(spaceId, messageId)
+        return ResponseEntity.ok(true)
     }
 
 }

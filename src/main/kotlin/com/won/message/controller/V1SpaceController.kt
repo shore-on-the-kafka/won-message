@@ -1,9 +1,9 @@
 package com.won.message.controller
 
 import com.won.message.controller.request.SpaceCreateReqeustBody
-import com.won.message.exception.SpaceException
 import com.won.message.space.Space
 import com.won.message.space.SpaceService
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.Instant
 
@@ -13,26 +13,26 @@ class V1SpaceController(
 ) {
 
     @PostMapping("/v1/spaces")
-    fun create(@RequestBody body: SpaceCreateReqeustBody): Space {
+    fun create(@RequestBody body: SpaceCreateReqeustBody): ResponseEntity<Space> {
         val space = Space.create(body, Instant.now())
-        return spaceService.create(space)
+        return ResponseEntity.ok(spaceService.create(space))
     }
 
     @GetMapping("/v1/spaces/{spaceId}")
-    fun get(@PathVariable spaceId: String): Space {
-        return kotlin.runCatching { spaceService.getOrException(spaceId) }
+    fun get(@PathVariable spaceId: String): ResponseEntity<Space> {
+        return kotlin.runCatching { ResponseEntity.ok(spaceService.getOrException(spaceId)) }
             .getOrElse {
                 when (it) {
-                    is IllegalArgumentException -> throw SpaceException.SpaceNotFoundException()
+                    is IllegalArgumentException -> ResponseEntity.notFound().build()
                     else -> throw it
                 }
             }
     }
 
     @DeleteMapping("/v1/spaces/{spaceId}")
-    fun deleteById(@PathVariable spaceId: String): Boolean {
+    fun deleteById(@PathVariable spaceId: String): ResponseEntity<Boolean> {
         spaceService.deleteById(spaceId)
-        return true
+        return ResponseEntity.ok(true)
     }
 
 }
