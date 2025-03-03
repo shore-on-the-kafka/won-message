@@ -2,6 +2,7 @@ package com.won.message.controller
 
 import com.won.message.controller.request.UserCreateReqeustBody
 import com.won.message.user.User
+import com.won.message.user.UserId
 import com.won.message.user.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -19,7 +20,7 @@ class V1UserController(
     }
 
     @GetMapping("/v1/users/{userId}")
-    fun get(@PathVariable userId: String): ResponseEntity<User> {
+    fun get(@PathVariable userId: UserId): ResponseEntity<User> {
         return kotlin.runCatching { ResponseEntity.ok(userService.getOrException(userId)) }
             .getOrElse {
                 when (it) {

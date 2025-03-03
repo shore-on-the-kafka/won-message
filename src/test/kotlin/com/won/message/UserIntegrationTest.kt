@@ -31,7 +31,7 @@ class UserIntegrationTest @Autowired constructor(
         ).andReturn().response
         val createdUser = objectMapper.readValue<User>(createResponse.contentAsString)
 
-        val getResponse = mockMvc.perform(MockMvcRequestBuilders.get("/v1/users/${createdUser.id}"))
+        val getResponse = mockMvc.perform(MockMvcRequestBuilders.get("/v1/users/${createdUser.id.value}"))
             .andReturn().response
         val gottenUser = objectMapper.readValue<User>(getResponse.contentAsString)
 

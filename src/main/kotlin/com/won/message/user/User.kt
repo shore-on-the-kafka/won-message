@@ -1,11 +1,12 @@
 package com.won.message.user
 
+import com.fasterxml.jackson.annotation.JsonValue
 import com.won.message.controller.request.UserCreateReqeustBody
 import com.won.message.id.UserIdGenerator
 import java.time.Instant
 
 data class User(
-    val id: String,
+    val id: UserId,
     val name: String,
     val joinedSpaceIds: List<String>,
     val createTime: Instant,
@@ -17,5 +18,11 @@ data class User(
             joinedSpaceIds = emptyList(),
             createTime = requestTime,
         )
+    }
+}
+
+data class UserId(@JsonValue val value: String) {
+    init {
+        require(value.isNotBlank()) { "User id must not be blank" }
     }
 }

@@ -11,7 +11,7 @@ class UserService(
         return userRepository.create(user)
     }
 
-    fun getOrException(id: String): User {
+    fun getOrException(id: UserId): User {
         return requireNotNull(userRepository.get(id)) { "User not found" }
     }
 

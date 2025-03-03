@@ -7,12 +7,13 @@ import com.navercorp.fixturemonkey.kotlin.giveMeOne
 import com.won.message.message.Message
 import com.won.message.space.Space
 import com.won.message.user.User
+import com.won.message.user.UserId
 
 object TestObjectFactory {
     val fixtureMonkey = FixtureMonkey.builder().plugin(KotlinPlugin()).build()
 
-    fun createUserId(): String = fixtureMonkey.giveMeOne()
-    fun createUser(userId: String = createUserId()) = fixtureMonkey.giveMeKotlinBuilder<User>()
+    fun createUserId(): UserId = fixtureMonkey.giveMeOne()
+    fun createUser(userId: UserId = createUserId()) = fixtureMonkey.giveMeKotlinBuilder<User>()
         .set(User::id, userId)
         .build().sample()
 

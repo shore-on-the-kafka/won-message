@@ -6,6 +6,7 @@ import com.won.message.message.MessageRepository
 import com.won.message.space.Space
 import com.won.message.space.SpaceRepository
 import com.won.message.user.User
+import com.won.message.user.UserId
 import com.won.message.user.UserRepository
 import org.springframework.context.annotation.Configuration
 import org.springframework.stereotype.Repository
@@ -28,7 +29,7 @@ class HashMapRepositoryConfiguration {
     }
 
     @Repository
-    class UserHashMapRepository : HashMapRepository<User, String>(), UserRepository {
+    class UserHashMapRepository : HashMapRepository<User, UserId>(), UserRepository {
         override fun getKey(entity: User) = entity.id
     }
 
