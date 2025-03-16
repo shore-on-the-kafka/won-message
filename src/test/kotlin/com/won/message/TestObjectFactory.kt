@@ -1,6 +1,7 @@
 package com.won.message
 
 import com.navercorp.fixturemonkey.FixtureMonkey
+import com.navercorp.fixturemonkey.jakarta.validation.plugin.JakartaValidationPlugin
 import com.navercorp.fixturemonkey.kotlin.KotlinPlugin
 import com.navercorp.fixturemonkey.kotlin.giveMeKotlinBuilder
 import com.navercorp.fixturemonkey.kotlin.giveMeOne
@@ -10,7 +11,10 @@ import com.won.message.user.User
 import com.won.message.user.UserId
 
 object TestObjectFactory {
-    val fixtureMonkey = FixtureMonkey.builder().plugin(KotlinPlugin()).build()
+    val fixtureMonkey = FixtureMonkey.builder()
+        .plugin(KotlinPlugin())
+        .plugin(JakartaValidationPlugin())
+        .build()
 
     fun createUserId(): UserId = fixtureMonkey.giveMeOne()
     fun createUser(userId: UserId = createUserId()) = fixtureMonkey.giveMeKotlinBuilder<User>()
