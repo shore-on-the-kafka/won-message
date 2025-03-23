@@ -1,14 +1,16 @@
 package com.won.message.space
 
 import com.won.message.TestObjectFactory
+import com.won.message.user.UserService
 import io.mockk.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SpaceServiceTest {
 
+    private val userService = mockk<UserService>(relaxed = true)
     private val repository = mockk<SpaceRepository>()
-    private val cut = SpaceService(repository)
+    private val cut = SpaceService(userService, repository)
 
     private val space = TestObjectFactory.createSpace()
 
@@ -20,6 +22,7 @@ class SpaceServiceTest {
 
         assertEquals(result, space)
         verify(exactly = 1) { repository.create(space) }
+        verify(exactly = space.getJoinedUserIds().size) { userService.addJoinedSpaceId(any(), eq(space.id)) }
     }
 
     @Test
