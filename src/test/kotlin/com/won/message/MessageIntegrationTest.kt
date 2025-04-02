@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.won.message.controller.request.MessageCreateReqeustBody
 import com.won.message.message.Message
+import com.won.message.security.Roles
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import kotlin.test.Test
@@ -21,6 +23,7 @@ class MessageIntegrationTest @Autowired constructor(
 ) {
 
     @Test
+    @WithMockUser(roles = [Roles.USER])
     fun `create and get message`() {
         val spaceId = TestObjectFactory.createSpaceId()
         val createRequestBody = TestObjectFactory.fixtureMonkey.giveMeOne(MessageCreateReqeustBody::class.java)
@@ -43,6 +46,7 @@ class MessageIntegrationTest @Autowired constructor(
     }
 
     @Test
+    @WithMockUser(roles = [Roles.USER])
     fun `create and get messages in one space`() {
         val spaceId = TestObjectFactory.createSpaceId()
         val createRequestBody1 = TestObjectFactory.fixtureMonkey.giveMeOne(MessageCreateReqeustBody::class.java)
@@ -73,6 +77,7 @@ class MessageIntegrationTest @Autowired constructor(
     }
 
     @Test
+    @WithMockUser(roles = [Roles.USER])
     fun `create and get messages in multiple space`() {
         val spaceId1 = TestObjectFactory.createSpaceId()
         val spaceId2 = TestObjectFactory.createSpaceId()
@@ -116,6 +121,7 @@ class MessageIntegrationTest @Autowired constructor(
     }
 
     @Test
+    @WithMockUser(roles = [Roles.USER])
     fun `delete message`() {
         val spaceId = TestObjectFactory.createSpaceId()
         val createRequestBody = TestObjectFactory.fixtureMonkey.giveMeOne(MessageCreateReqeustBody::class.java)

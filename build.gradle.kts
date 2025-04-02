@@ -21,6 +21,7 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("jakarta.validation:jakarta.validation-api:3.1.1")
@@ -30,6 +31,7 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.16")
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-kotlin:1.1.10")
     testImplementation("com.navercorp.fixturemonkey:fixture-monkey-jakarta-validation:1.1.10")
+    testImplementation("org.springframework.security:spring-security-test")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
