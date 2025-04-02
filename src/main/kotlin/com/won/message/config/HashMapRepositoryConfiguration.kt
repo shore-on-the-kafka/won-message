@@ -30,6 +30,7 @@ class HashMapRepositoryConfiguration {
 
     @Repository
     class UserHashMapRepository : HashMapRepository<User, UserId>(), UserRepository {
+        override fun getByName(name: String): User? = map.values.firstOrNull { it.name == name }
         override fun getKey(entity: User) = entity.id
     }
 
