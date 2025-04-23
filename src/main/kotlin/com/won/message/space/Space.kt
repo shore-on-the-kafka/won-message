@@ -1,5 +1,6 @@
 package com.won.message.space
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.won.message.controller.request.SpaceCreateReqeustBody
 import com.won.message.id.SpaceIdGenerator
 import com.won.message.user.UserId
@@ -22,6 +23,7 @@ data class Space(
         )
     }
 
+    @JsonIgnore
     fun getJoinedUserIds(): List<UserId> =
         (permissionSettings.readableUserIds + permissionSettings.writableUserIds).distinct()
 }

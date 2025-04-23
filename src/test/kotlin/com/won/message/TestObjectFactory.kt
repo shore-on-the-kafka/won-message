@@ -4,7 +4,9 @@ import com.navercorp.fixturemonkey.FixtureMonkey
 import com.navercorp.fixturemonkey.jakarta.validation.plugin.JakartaValidationPlugin
 import com.navercorp.fixturemonkey.kotlin.KotlinPlugin
 import com.navercorp.fixturemonkey.kotlin.giveMeKotlinBuilder
-import com.navercorp.fixturemonkey.kotlin.giveMeOne
+import com.won.message.id.MessageIdGenerator
+import com.won.message.id.SpaceIdGenerator
+import com.won.message.id.UserIdGenerator
 import com.won.message.message.Message
 import com.won.message.space.Space
 import com.won.message.user.User
@@ -16,19 +18,19 @@ object TestObjectFactory {
         .plugin(JakartaValidationPlugin())
         .build()
 
-    fun createUserId(): UserId = fixtureMonkey.giveMeOne()
+    fun createUserId(): UserId = UserIdGenerator.generate()
     fun createUser(userId: UserId = createUserId()) = fixtureMonkey.giveMeKotlinBuilder<User>()
         .set(User::id, userId)
         .build().sample()
 
-    fun createSpaceId(): String = fixtureMonkey.giveMeOne()
+    fun createSpaceId(): String = SpaceIdGenerator.generate()
     fun createSpace(spaceId: String = createSpaceId()) = fixtureMonkey.giveMeKotlinBuilder<Space>()
         .set(Space::id, spaceId)
         .build().sample()
 
     fun getSpaceFixtureBuilder() = fixtureMonkey.giveMeKotlinBuilder<Space>()
 
-    fun createMessageId(): String = fixtureMonkey.giveMeOne()
+    fun createMessageId(): String = MessageIdGenerator.generate()
     fun createMessage(
         spaceId: String = createSpaceId(),
         messageId: String = createMessageId(),

@@ -4,24 +4,31 @@ import com.won.message.TestObjectFactory
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import org.springframework.security.crypto.password.PasswordEncoder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class UserServiceTest {
     private val repository = mockk<UserRepository>()
-    private val cut = UserService(repository)
+    private val passwordEncoder = mockk<PasswordEncoder>()
+    private val cut = UserService(repository, passwordEncoder)
 
     private val user = TestObjectFactory.createUser()
 
     @Test
     fun create() {
-        every { repository.create(user) } returns user
+        val rawPassword = user.password
+        val encodedPassword = "encodedPassword"
+
+        every { passwordEncoder.encode(rawPassword) } returns encodedPassword
+        every { repository.create(any()) } answers { firstArg() }
 
         val result = cut.create(user)
 
-        assertEquals(result, user)
-        verify(exactly = 1) { repository.create(user) }
+        assertEquals(encodedPassword, result.password)
+        verify(exactly = 1) { passwordEncoder.encode(rawPassword) }
+        verify(exactly = 1) { repository.create(any()) }
     }
 
     @Test

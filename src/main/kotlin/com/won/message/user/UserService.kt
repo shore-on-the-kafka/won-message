@@ -1,14 +1,19 @@
 package com.won.message.user
 
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+
 
 @Service
 class UserService(
     private val userRepository: UserRepository,
+    private val passwordEncoder: PasswordEncoder,
 ) {
 
     fun create(user: User): User {
-        return userRepository.create(user)
+        val encryptedUser = user.encryptPassword(passwordEncoder)
+        userRepository.create(encryptedUser)
+        return encryptedUser
     }
 
     fun getOrException(id: UserId): User {

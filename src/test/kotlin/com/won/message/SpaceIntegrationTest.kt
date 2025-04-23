@@ -3,11 +3,13 @@ package com.won.message
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.won.message.controller.request.SpaceCreateReqeustBody
+import com.won.message.security.Roles
 import com.won.message.space.Space
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import kotlin.test.Test
@@ -21,6 +23,7 @@ class SpaceIntegrationTest @Autowired constructor(
 ) {
 
     @Test
+    @WithMockUser(roles = [Roles.USER])
     fun `create and get space`() {
         val createRequestBody = TestObjectFactory.fixtureMonkey.giveMeOne(SpaceCreateReqeustBody::class.java)
 
@@ -40,6 +43,7 @@ class SpaceIntegrationTest @Autowired constructor(
     }
 
     @Test
+    @WithMockUser(roles = [Roles.USER])
     fun `delete space`() {
         val createRequestBody = TestObjectFactory.fixtureMonkey.giveMeOne(SpaceCreateReqeustBody::class.java)
 

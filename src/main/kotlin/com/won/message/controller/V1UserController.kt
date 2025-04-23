@@ -15,8 +15,8 @@ class V1UserController(
 
     @PostMapping("/v1/users")
     fun create(@RequestBody body: UserCreateReqeustBody): ResponseEntity<User> {
-        val space = User.create(body, Instant.now())
-        return ResponseEntity.ok(userService.create(space))
+        val user = User.create(body, Instant.now())
+        return ResponseEntity.ok(userService.create(user))
     }
 
     @GetMapping("/v1/users/{userId}")
