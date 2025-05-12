@@ -2,7 +2,11 @@ package com.won.message.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.won.message.security.*
+import com.won.message.security.oauth.OAuth2AuthenticationFailureHandler
+import com.won.message.security.oauth.OAuth2AuthenticationSuccessHandler
 import com.won.message.user.UserDetailsService
+import com.won.message.user.UserService
+import jakarta.servlet.DispatcherType
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -16,6 +20,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.util.matcher.DispatcherTypeRequestMatcher
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +30,7 @@ class SecurityConfig(
 
     @Bean
     fun filterChain(
+        userService: UserService,
         authenticationManager: AuthenticationManager,
         objectMapper: ObjectMapper,
         http: HttpSecurity,
@@ -36,8 +42,15 @@ class SecurityConfig(
         http {
             csrf { disable() }
             authorizeHttpRequests {
+                authorize(DispatcherTypeRequestMatcher(DispatcherType.ERROR), permitAll)
+                authorize("/oauth2/**", "/login/oauth2/**", permitAll)
                 authorize(HttpMethod.POST, "/v1/users", permitAll)
                 authorize("/v1/**", hasRole(Roles.USER))
+            }
+            oauth2Login {
+                authenticationSuccessHandler =
+                    OAuth2AuthenticationSuccessHandler(userService, jwtTokenProvider, objectMapper)
+                authenticationFailureHandler = OAuth2AuthenticationFailureHandler()
             }
             addFilterAt<UsernamePasswordAuthenticationFilter>(loginAuthFilter)
             addFilterBefore<UsernamePasswordAuthenticationFilter>(jwtAuthFilter)
