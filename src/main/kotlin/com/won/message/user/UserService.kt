@@ -16,6 +16,10 @@ class UserService(
         return encryptedUser
     }
 
+    fun createIfNotExists(user: User): User {
+        return userRepository.getByName(user.name) ?: run { create(user) }
+    }
+
     fun getOrException(id: UserId): User {
         return requireNotNull(userRepository.get(id)) { "User not found" }
     }
