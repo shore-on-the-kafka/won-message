@@ -10,7 +10,7 @@ spring:
           google:
             client-id: 506139360106-hq4g2th4442tfgm2cesd4b6ob3l265g5.apps.googleusercontent.com
             client-secret: PLEASE_SET_GOOGLE_OAUTH_CLIENT_SECRET
-            scope: profile, email
+            scope: openid, profile, email
             redirect-uri: "{baseUrl}/login/oauth2/code/google"
         provider:
           google:

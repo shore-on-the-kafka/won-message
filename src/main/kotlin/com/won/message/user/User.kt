@@ -25,8 +25,8 @@ data class User(
             createTime = requestTime,
         )
 
-        fun createOAuth2LoginUser(name: String, requestTime: Instant) = User(
-            id = UserIdGenerator.generate(),
+        fun createOAuth2LoginUser(id: String, name: String, requestTime: Instant) = User(
+            id = UserId(id),
             name = name,
             password = generateDummyPassword(),
             joinedSpaceIds = emptyList(),

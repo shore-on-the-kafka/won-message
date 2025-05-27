@@ -15,7 +15,7 @@ import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User
+import org.springframework.security.oauth2.core.oidc.user.OidcUser
 import java.time.Instant
 
 @SpringBootTest
@@ -32,19 +32,25 @@ class OAuth2AuthenticationSuccessHandlerTest @Autowired constructor(
     )
 
     @Test
-    fun `Google OAuth2 SuccessHandler should create token and write to response`() {
-        val googleLoginEmail = "test@example.com"
-        val loginUser = User.createOAuth2LoginUser(name = googleLoginEmail, requestTime = Instant.now())
+    fun `OIDC OAuth2 SuccessHandler should create token and write to response`() {
+        val oidcSubject = "oidc-subject-123"
+        val userGivenName = "Test"
+        val userNickName = "TestUser"
+        val providerId = "google"
+        val userIdentifier = "${providerId}_${oidcSubject}"
+        val loginUser =
+            User.createOAuth2LoginUser(id = userIdentifier, name = userGivenName, requestTime = Instant.now())
+        val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
 
-        val principal = DefaultOAuth2User(
-            listOf(SimpleGrantedAuthority("ROLE_USER")),
-            mapOf("email" to googleLoginEmail),
-            "email"
-        )
-        val authentication = OAuth2AuthenticationToken(principal, principal.authorities, "google")
+        val oidcUser = mockk<OidcUser> {
+            every { subject } returns oidcSubject
+            every { givenName } returns userGivenName
+            every { nickName } returns userNickName
+        }
+        val authentication = OAuth2AuthenticationToken(oidcUser, authorities, providerId)
 
         every { userService.createIfNotExists(any()) } returns loginUser
-        every { jwtTokenProvider.createToken(googleLoginEmail, listOf("ROLE_USER")) } returns "mocked-jwt-token"
+        every { jwtTokenProvider.createToken(loginUser.name, listOf("ROLE_USER")) } returns "mocked-jwt-token"
 
         val request = MockHttpServletRequest()
         val response = MockHttpServletResponse()
@@ -54,6 +60,7 @@ class OAuth2AuthenticationSuccessHandlerTest @Autowired constructor(
         val responseJson = objectMapper.readTree(response.contentAsString)
 
         assertEquals("mocked-jwt-token", responseJson["token"].asText())
+        assertEquals(loginUser.id.value, responseJson["loginUser"]["id"].asText())
         assertEquals(loginUser.name, responseJson["loginUser"]["name"].asText())
         assertEquals(HttpServletResponse.SC_OK, response.status)
     }

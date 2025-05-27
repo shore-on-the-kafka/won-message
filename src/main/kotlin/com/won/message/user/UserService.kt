@@ -17,7 +17,7 @@ class UserService(
     }
 
     fun createIfNotExists(user: User): User {
-        return userRepository.getByName(user.name) ?: run { create(user) }
+        return kotlin.runCatching { getOrException(user.id) }.getOrElse { create(user) }
     }
 
     fun getOrException(id: UserId): User {

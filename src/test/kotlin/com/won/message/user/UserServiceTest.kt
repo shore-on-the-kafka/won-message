@@ -36,7 +36,7 @@ class UserServiceTest {
         val rawPassword = user.password
         val encodedPassword = "encodedPassword"
 
-        every { repository.getByName(user.name) } returns null
+        every { repository.get(user.id) } returns null
         every { passwordEncoder.encode(rawPassword) } returns encodedPassword
         every { repository.create(any()) } answers { firstArg() }
 
@@ -44,19 +44,19 @@ class UserServiceTest {
 
         assertEquals(user.name, result.name)
         assertEquals(encodedPassword, result.password)
-        verify(exactly = 1) { repository.getByName(user.name) }
+        verify(exactly = 1) { repository.get(user.id) }
         verify(exactly = 1) { passwordEncoder.encode(rawPassword) }
         verify(exactly = 1) { repository.create(any()) }
     }
 
     @Test
     fun `createIfNotExists - user already exists`() {
-        every { repository.getByName(user.name) } returns user
+        every { repository.get(user.id) } returns user
 
         val result = cut.createIfNotExists(user)
 
         assertEquals(user, result)
-        verify(exactly = 1) { repository.getByName(user.name) }
+        verify(exactly = 1) { repository.get(user.id) }
         verify(exactly = 0) { repository.create(any()) }
     }
 
