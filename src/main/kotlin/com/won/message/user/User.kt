@@ -6,6 +6,8 @@ import com.won.message.id.UserIdGenerator
 import jakarta.validation.constraints.NotBlank
 import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.Instant
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 data class User(
     val id: UserId,
@@ -22,6 +24,17 @@ data class User(
             joinedSpaceIds = emptyList(),
             createTime = requestTime,
         )
+
+        fun createOAuth2LoginUser(id: String, name: String, requestTime: Instant) = User(
+            id = UserId(id),
+            name = name,
+            password = generateDummyPassword(),
+            joinedSpaceIds = emptyList(),
+            createTime = requestTime,
+        )
+
+        @OptIn(ExperimentalUuidApi::class)
+        private fun generateDummyPassword(): String = Uuid.random().toString()
     }
 
     fun encryptPassword(passwordEncoder: PasswordEncoder): User {

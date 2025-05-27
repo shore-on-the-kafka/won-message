@@ -1,0 +1,22 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: won-message
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 506139360106-hq4g2th4442tfgm2cesd4b6ob3l265g5.apps.googleusercontent.com
+            client-secret: PLEASE_SET_GOOGLE_OAUTH_CLIENT_SECRET
+            scope: openid, profile, email
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+logging:
+  level:
+    org.springframework: DEBUG

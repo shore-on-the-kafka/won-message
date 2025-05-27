@@ -16,6 +16,10 @@ class UserService(
         return encryptedUser
     }
 
+    fun createIfNotExists(user: User): User {
+        return kotlin.runCatching { getOrException(user.id) }.getOrElse { create(user) }
+    }
+
     fun getOrException(id: UserId): User {
         return requireNotNull(userRepository.get(id)) { "User not found" }
     }
